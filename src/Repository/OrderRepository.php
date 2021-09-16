@@ -2,11 +2,19 @@
 
 namespace App\Repository;
 
+// Глобальный неймспайс у \PDO можно заменить на импорт и далее использовать PDO
 use App\Entity\Item;
 use App\Entity\Order;
 
 class OrderRepository
 {
+    /*
+     * Все данные передаются в запросы напрямую, минуя prepare
+     * так же отсутвует проверка на валидность введеных пользователем данных, риск SQL инъекций
+     *
+     * Не следет использовать * в селектах, нужно пречислить все необходимые поля
+     */
+
     /** @var \PDO */
     protected $pdo;
 
@@ -20,6 +28,11 @@ class OrderRepository
 
     public function save(Order $order)
     {
+        /*
+         * Сохранение следует обернуть в try catch, в try - транзакцию, в catch - rollBack, иначе можем потерять консистентность данных
+         *
+         * В запросах где-то есть пробелы после запятых, где-то нет, лучше писать в одном стиле
+         */
         $sql = "INSERT INTO orders (id, sum, contractor_type) VALUES ({$order->id}, {$order->sum}, {$order->contractorType})";
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute();
@@ -38,6 +51,10 @@ class OrderRepository
         $sql = "SELECT * FROM orders WHERE id={$orderId} LIMIT 1";
         $stmt = $this->pdo->prepare($sql);
         $data = $stmt->fetch();
+
+        /*
+         * Нет обработки отсутсвия заказа в базе
+         */
 
         $order = new Order($data['id']);
         $order->contractorType = $data['contractor_type'];
@@ -66,6 +83,11 @@ class OrderRepository
         }
         return $orders;
     }
+
+    /*
+     * Следует создать репозиторий для сущности Item, и запрашивать позиции заказа там
+     * Так же в возвращаемых позициях товара будет отсутствовать id, хотя в базе он уже есть
+     */
 
     public function getOrderItems($orderId)
     {

@@ -10,6 +10,10 @@ const CONTRACTOR_TYPE_LEGAL = 2;
 
 class Order
 {
+    /*
+     * Методы лучше сделать приватными, а доступы к ним через геттеры и сеттеры
+     */
+
     /** @var string */
     public $id;
 
@@ -65,7 +69,7 @@ class Order
             return $this->isPaid;
         }
         if ($this->contractorType == CONTRACTOR_TYPE_LEGAL) {
-            return $this->billMicroserviceClient->IsPaid($this->id);
+            return $this->billMicroserviceClient->IsPaid($this->id); // Имя метода должно начинаться со строчной буквы
         }
     }
 }

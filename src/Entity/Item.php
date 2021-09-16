@@ -4,6 +4,9 @@ namespace App\Entity;
 
 class Item
 {
+    // нет смысла в protected, лучше сделать private
+
+    // Тип в бд int, как в сеттерах и геттерах, нужно заменить, как и у $productId, $price, $quantity
     /** @var string */
     protected $id;
 
@@ -25,6 +28,7 @@ class Item
      * @param string $price
      * @param string $quantity
      */
+    // проставить тайпхинтинги и убрать докблок
     public function __construct($orderId, $productId, $price, $quantity)
     {
         $this->orderId = $orderId;
