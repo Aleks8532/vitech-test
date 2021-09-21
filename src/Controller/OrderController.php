@@ -69,6 +69,7 @@ class OrderController
             }
         } catch (\Exception $exception) {
             // Тот же вопрос про выходные данные в JSON здесь и далее
+            // Не указан HTTP Error code
             return new Response("Something went wrong");
         }
     }
@@ -93,6 +94,7 @@ class OrderController
         if ($order->isPaid()) {
             return new Response("Thank you");
         } else {
+            // Не указан HTTP Error code
             return new Response("You haven't paid bill yet");
         }
     }
